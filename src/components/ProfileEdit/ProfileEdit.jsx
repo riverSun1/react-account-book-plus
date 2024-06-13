@@ -13,6 +13,7 @@ const ProfileEdit = () => {
     getUserInfo().then((res) => {
       if (res) {
         setUser({ nickname: res.nickname });
+        setNickname(res.nickname); // 초기 닉네임 설정
       }
     });
   }, []);
@@ -50,7 +51,7 @@ const ProfileEdit = () => {
             minLength="1"
             maxLength="10"
             placeholder="닉네임"
-            value={user.nickname}
+            defaultValue={user.nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
           <label htmlFor="avatar">프로필 이미지</label>
