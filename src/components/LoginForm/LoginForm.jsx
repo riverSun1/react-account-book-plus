@@ -40,6 +40,10 @@ const LoginForm = () => {
     });
 
     if (response) {
+      setPassword("");
+      setNickname("");
+      setId("");
+      alert("회원가입이 완료되었습니다.");
       //console.log("회원가입 API 응답값 : ", response);
     } else {
       //console.log("회원가입 요청이 실패했습니다.");
@@ -61,6 +65,20 @@ const LoginForm = () => {
     } else {
       //console.log("로그인 요청이 실패했습니다.");
     }
+  };
+
+  const moveToLogin = () => {
+    setNewUser(true);
+    setPassword("");
+    setNickname("");
+    setId("");
+  };
+
+  const moveToRegister = () => {
+    setNewUser(false);
+    setPassword("");
+    setNickname("");
+    setId("");
   };
 
   return (
@@ -96,7 +114,7 @@ const LoginForm = () => {
             <Button onClick={handleRegister}>회원가입</Button>
             <p>
               이미 계정이 있으신가요?
-              <Span onClick={() => setNewUser(true)}> 로그인</Span>
+              <Span onClick={moveToLogin}> 로그인</Span>
             </p>
           </Div>
         </Form>
@@ -123,7 +141,7 @@ const LoginForm = () => {
             <Button onClick={handleLogin}>로그인</Button>
             <p>
               계정이 없으신가요?
-              <Span onClick={() => setNewUser(false)}> 회원가입</Span>
+              <Span onClick={moveToRegister}> 회원가입</Span>
             </p>
           </Div>
         </Form>

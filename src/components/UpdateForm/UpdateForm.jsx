@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 //import { useDispatch } from "react-redux";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteExpense, getExpense, putExpense } from "../../api/expense";
+import { useExpenseMutation } from "../../hooks/mutation/useExpenseMutation";
+import { useGetExpense } from "../../hooks/query/useExpenseQuery";
 import {
   BackButton,
   Container,
@@ -13,24 +13,21 @@ import {
 } from "./UpdateForm.styled";
 
 const UpdateForm = () => {
-  //const dispatch = useDispatch();
   const navigate = useNavigate();
-  const queryClient = new QueryClient();
   const { id } = useParams();
   const location = useLocation();
   const userInfoFromState = { ...location.state };
+  const { isPending, error } = useGetExpense();
+  const { editMutation, deleteMutation } = useExpenseMutation();
 
-  const {
-    data: userInfo,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["expenses", id],
-    queryFn: getExpense,
-  });
-
-  // console.log(userInfo);
-  // console.log(userInfoFromState);
+  // const {
+  //   data: userInfo,
+  //   isLoading,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["expenses", id],
+  //   queryFn: getExpense,
+  // });
 
   const dateRef = useRef(null);
   const itemRef = useRef(null);
@@ -57,17 +54,17 @@ const UpdateForm = () => {
   };
 
   const handleDelete = () => {
-    mutationDelete.mutate(id);
+    deleteMutation.mutate(id);
     alert("삭제가 완료되었습니다.");
   };
 
-  const mutationEdit = useMutation({
-    mutationFn: putExpense,
-    onSuccess: () => {
-      navigate("/");
-      queryClient.invalidateQueries(["expense"]);
-    },
-  });
+  // const mutationEdit = useMutation({
+  //   mutationFn: putExpense,
+  //   onSuccess: () => {
+  //     navigate("/");
+  //     queryClient.invalidateQueries(["expense"]);
+  //   },
+  // });
 
   const handleUpdate = () => {
     const date = dateRef.current.value;
@@ -92,20 +89,20 @@ const UpdateForm = () => {
       expense: expense,
       content: content,
     };
-    mutationEdit.mutate(updatedData);
+    editMutation.mutate(updatedData);
     alert("수정이 완료되었습니다.");
   };
 
-  const mutationDelete = useMutation({
-    mutationFn: deleteExpense,
-    onSuccess: () => {
-      navigate("/");
-      queryClient.invalidateQueries(["expense"]);
-    },
-  });
+  // const mutationDelete = useMutation({
+  //   mutationFn: deleteExpense,
+  //   onSuccess: () => {
+  //     navigate("/");
+  //     queryClient.invalidateQueries(["expense"]);
+  //   },
+  // });
 
   // 데이터를 로딩 중일 때 표시할 내용
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
 
   // 에러가 발생했을 때 표시할 내용
   if (error) return <div>Error: {error.message}</div>;

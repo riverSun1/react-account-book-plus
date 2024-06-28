@@ -1,22 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
-import { getExpenses } from "../../api/expense";
+import { useGetExpense } from "../../hooks/query/useExpenseQuery";
 import { GraphComponent } from "./Graph.styled";
 
 const COLOR = ["#3d6aff", "#24c459", "#fff458", "#e8344e"];
 
 const Graph = () => {
-  const {
-    data: expenses = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["expenses"],
-    queryFn: getExpenses,
-  });
-
-  // const datas = useSelector((state) => state.account.datas);
+  // const {
+  //   data: expenses = [],
+  //   isLoading,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["expenses"],
+  //   queryFn: getExpenses,
+  // });
+  const { expenses, isPending, error } = useGetExpense();
   const selectedMonth = useSelector((state) => state.month.selectedMonth);
 
   const filteredData = expenses.filter((data) => {
@@ -33,7 +31,7 @@ const Graph = () => {
   }));
 
   // 데이터를 로딩 중일 때 표시할 내용
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
 
   // 에러가 발생했을 때 표시할 내용
   if (error) return <div>Error: {error.message}</div>;

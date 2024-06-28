@@ -1,7 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getExpenses } from "../../api/expense";
+import { useGetExpense } from "../../hooks/query/useExpenseQuery";
 import {
   ListItem,
   NoListItem,
@@ -14,17 +13,18 @@ const PayList = () => {
   // const datas = useSelector((state) => state.account.datas);
   const selectedMonth = useSelector((state) => state.month.selectedMonth);
 
-  const {
-    data: expenses = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["expenses"],
-    queryFn: getExpenses,
-  });
+  // const {
+  //   data: expenses = [],
+  //   isLoading,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["expenses"],
+  //   queryFn: getExpenses,
+  // });
+  const { expenses, isPending, error } = useGetExpense();
 
   // 데이터를 로딩 중일 때 표시할 내용
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
 
   // 에러가 발생했을 때 표시할 내용
   if (error) return <div>Error: {error.message}</div>;

@@ -1,8 +1,6 @@
-import { QueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { postExpense } from "../../api/expense";
+import { useExpenseMutation } from "../../hooks/mutation/useExpenseMutation";
 import {
   InformButton,
   InformComponent,
@@ -11,20 +9,19 @@ import {
 } from "./AddDataForm.styled";
 
 const AddDataForm = () => {
-  const navigate = useNavigate();
-  const queryClient = new QueryClient();
-  const mutation = useMutation({
-    mutationFn: postExpense,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["expenses"]); // 쿼리캐시삭제
-      navigate(0);
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationFn: postExpense,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["expenses"]); // 쿼리캐시삭제
+  //     navigate(0);
+  //   },
+  // });
 
   const [date, setDate] = useState(`2024-01-01`);
   const [item, setItem] = useState("");
   const [expense, setExpense] = useState("");
   const [content, setContent] = useState("");
+  const { addMutation } = useExpenseMutation();
 
   const handleSubmit = () => {
     // 날짜 유효성 검사
@@ -47,7 +44,7 @@ const AddDataForm = () => {
       expense: expense,
       content: content,
     };
-    mutation.mutate(newExpense);
+    addMutation.mutate(newExpense);
 
     setDate("");
     setItem("");
